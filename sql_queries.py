@@ -1,14 +1,14 @@
 # DROP TABLES
 songplay_table_drop = "drop table if exists songplays;"
-user_table_drop = "drop table if exists users;"
-song_table_drop = "drop table if exists songs;"
-artist_table_drop = "drop table if exists artists;"
-time_table_drop = "drop table if exists time;"
+user_table_drop     = "drop table if exists users;"
+song_table_drop     = "drop table if exists songs;"
+artist_table_drop   = "drop table if exists artists;"
+time_table_drop     = "drop table if exists time;"
 
 # CREATE TABLES
 songplay_table_create = ("""
 create table if not exists songplays (
-    songplay_id integer,
+    songplay_id bigserial primary key not null,
     start_time timestamp,
     user_id varchar(50),
     level varchar(100),
@@ -16,7 +16,7 @@ create table if not exists songplays (
     artist_id varchar(100),
     session_id integer,
     location varchar(100),
-    user_agent varchar(100)
+    user_agent text
 );
 comment on table songplays is 'Records in log data associated with song plays i.e.';
 """)
@@ -70,7 +70,6 @@ comment on table time is 'Timestamps of records in songplays broken down into 
 # INSERT RECORDS
 songplay_table_insert = ("""
 insert into songplays (
-    songplay_id,
     start_time,
     user_id,
     level,
@@ -80,7 +79,7 @@ insert into songplays (
     location,
     user_agent
 )
-values (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+values (%s, %s, %s, %s, %s, %s, %s, %s)
 """)
 
 user_table_insert = ("""
@@ -139,7 +138,7 @@ from
 inner join artists b
         on a.artist_id = b.artist_id
 where 
-    a.title = %s and b.name = %s /*and a.duration = %s*/
+    a.title = %s and b.name = %s and a.duration = %s
 ;
 """)
 
