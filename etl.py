@@ -10,33 +10,34 @@ def process_song_file(cur, filepath):
     df = pd.read_json(filepath, lines=True)
     columns_song = ['song_id', 'title', 'artist_id', 'year', 'duration']
 
-    # insert song record
+    # insert songs record
     song_data = df[columns_song].values.tolist()
     cur.execute(song_table_insert, song_data[0])
     
-    # insert artist record
-    ##artist_data = 
-    ##cur.execute(artist_table_insert, artist_data)
+    # insert artists record
+    columns_artist = ['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']
+    artist_data = df[columns_artist].fillna("").values.tolist()
+    cur.execute(artist_table_insert, artist_data[0])
 
 
 def process_log_file(cur, filepath):
-    print("process_log_file")
     # open log file
-    ##df = 
+    df = pd.read_json(filepath, lines=True)
 
     # filter by NextSong action
     ##df = 
 
     # convert timestamp column to datetime
-    ##t = 
+    t = pd.to_datetime(df['ts'], unit='ms')
     
     # insert time data records
-    ##time_data = 
-    ##column_labels = 
-    ##time_df = 
+    time_data = (t.astype(str), t.dt.hour, t.dt.day, t.dt.week, t.dt.month, t.dt.year, t.dt.weekday)
+    column_labels = ("start_time", "hour", "day", "week", "month", "year", "weekday")
+    time_dict = dict(zip(column_labels, time_data))
+    time_df = pd.DataFrame(time_dict)
 
-    ##for i, row in time_df.iterrows():
-    ##    cur.execute(time_table_insert, list(row))
+    for i, row in time_df.iterrows():
+        cur.execute(time_table_insert, list(row))
 
     # load user table
     ##user_df = 
@@ -92,7 +93,7 @@ def main():
     
     try:
         process_data(cur, conn, filepath='data/song_data', func=process_song_file)
-        #process_data(cur, conn, filepath='data/log_data', func=process_log_file)
+        process_data(cur, conn, filepath='data/log_data', func=process_log_file)
 
         conn.close()
     except Exception as e:
