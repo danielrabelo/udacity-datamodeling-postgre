@@ -40,27 +40,31 @@ def process_log_file(cur, filepath):
         cur.execute(time_table_insert, list(row))
 
     # load user table
-    ##user_df = 
+    columns_user = ['userId', 'firstName', 'lastName', 'gender', 'level']
+    user_df = df[columns_user].drop_duplicates().fillna('')
 
     # insert user records
-    ##for i, row in user_df.iterrows():
-    ##    cur.execute(user_table_insert, row)
+    for i, row in user_df.iterrows():
+        cur.execute(user_table_insert, list(row))
 
     # insert songplay records
-    ##for index, row in df.iterrows():
+    for index, row in df.iterrows():
         
         # get songid and artistid from song and artist tables
-        ##cur.execute(song_select, (row.song, row.artist, row.length))
-        ##results = cur.fetchone()
+        cur.execute(song_select, (row.song, row.artist, row.length))
+        results = cur.fetchone()
         
-        ##if results:
-        ##    songid, artistid = results
-        ##else:
-        ##    songid, artistid = None, None
+        if results:
+            songid, artistid = results
+        else:
+            songid, artistid = None, None
+            
+        # get timestamp format
+        dt = pd.to_datetime(row.ts, unit='ms')    
 
         # insert songplay record
-        ##songplay_data = 
-        ##cur.execute(songplay_table_insert, songplay_data)
+        songplay_data = (dt, row.userId, row.level, songid, artistid, row.sessionId, row.location, row.userAgent)
+        cur.execute(songplay_table_insert, songplay_data)
 
 
 def process_data(cur, conn, filepath, func):
