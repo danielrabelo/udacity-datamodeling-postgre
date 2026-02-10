@@ -2,7 +2,7 @@
 This project loads data from music streaming .json files and inserts it into postgresql in a relational model.
 
 **Prerequisites:**
- - PostgreSQL and Python3
+ - PostgreSQL and Python3.x
 
 **Step 1** - Create tables in to PostgreSQL 
 ```
