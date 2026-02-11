@@ -13,7 +13,7 @@ python create_tables.py
 python etl.py
 ```
 **Step 3** - Test if records successfully added into tables
-Run jupyter notebook test.ipynb 
+Run jupyter notebook test.ipynb file.
 
 ## Project tables
 **Tables**
